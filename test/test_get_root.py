@@ -14,19 +14,20 @@ def test_get_root(client):
     assert result.status_code== 200
 
 def test_get_city(client):
-    #preparar ARANGE
+    #preparar ARRANGE
     con = sqlite3.connect("weather_test.db")
     cur = con.cursor()
     cur.executescript(
         '''
+        DROP TABLE IF EXISTS cities;
         CREATE TABLE IF NOT EXISTS cities(id, name, temperature, rain_probability);
         INSERT INTO cities (id, name, temperature, rain_probability) VALUES ("BIO", "Bilbao",34, 0.5 )
         
         '''
         )
-    #hacer la petición
+    #hacer la petición ACT
     result=client.get("/cities/BIO")
-    #comprobar la respuesta
+    #comprobar la respuesta ASSERT
     assert result.status_code==200
     assert result.json=={
         "id": "BIO",
