@@ -1,9 +1,9 @@
 import pytest
 from src.webserver import create_app
 
-app = create_app("weather.db")
 @pytest.fixture
 def client():
+    app=create_app("weather_test.db")
     with app.test_client() as client:
         yield client
 
