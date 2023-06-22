@@ -1,5 +1,6 @@
 import pytest
 from src.webserver import create_app
+import sqlite3
 
 @pytest.fixture
 def client():
@@ -11,3 +12,25 @@ def test_get_root(client):
     result = client.get("/")
     assert result.text == 'Hola'
     assert result.status_code== 200
+
+def test_get_city(client):
+    #preparar ARANGE
+    con = sqlite3.connect("weather_test.db")
+    cur = con.cursor()
+    cur.executescript(
+        '''
+        CREATE TABLE IF NOT EXISTS cities(id, name, temperature, rain_probability);
+        INSERT INTO cities (id, name, temperature, rain_probability) VALUES ("BIO", "Bilbao",34, 0.5 )
+        
+        '''
+        )
+    #hacer la petición
+    result=client.get("/cities/BIO")
+    #comprobar la respuesta
+    assert result.status_code==200
+    assert result.json=={
+        "id": "BIO",
+        "name": "Bilbao",
+        "temperature": 34,
+        "rain_probability": 0.5
+    }
